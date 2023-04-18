@@ -1,0 +1,114 @@
+/***** La conjugaison 1er groupe  *****/
+body {
+  --main-font-size: 1rem;
+}
+
+.container-principal-conjugation * {
+  font-size: var(--main-font-size);
+}
+
+.container-principal-conjugation {
+  width: calc(var(--main-font-size)*20);
+  height: max-content;
+  margin: 20px auto;
+  padding: 30px;                                                /* modifié */
+  background-color: hsla(151, 29%, 69%, 0.718);
+}
+
+.container-choice {
+  text-align: center;
+}
+
+.instructions {
+  text-transform: uppercase;
+  font-weight: bold; 
+  font-size: 1.1rem;
+  margin: 0 auto !important;
+  margin-bottom: 10px !important;
+}
+
+.container-conjugation {
+  width: max-content;
+  height: fit-content;
+  margin: 35px auto 20px;
+  text-align: right;
+}
+
+.container-conjugation label {
+  display: block;
+  position: relative;
+  font-size: 1.1rem;
+}
+
+.container-conjugation input {
+  width: 180px;
+  margin-bottom: 10px;
+  padding: 3px;
+  text-transform: lowercase;
+  text-align: center;
+  cursor: text;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.buttons > * {
+  display: inline-block;
+  padding: 5px 10px;
+  margin-left: 0px;
+  cursor: pointer;
+}
+
+.container-feedback {
+  max-width: fit-content;
+  padding: 1rem;
+  margin: 20px auto 10px;
+  text-align: center;
+  background-color: #d6d6a3;
+  border-radius: 5px;
+  font-size: var(--main-font-size);
+}
+
+.labelsuccess input {
+  background-color: azure;
+  cursor: not-allowed; 
+}
+
+.labelsuccess::after {
+  position: absolute;
+  content: " \2714";
+  right: 9px; 
+  right: 8px;
+  top: 3px;
+  color: green;
+}
+
+.labelfailure::after {
+  position: absolute;
+  content: " \2718";
+  right: 8px;
+  top: 3px;
+  color: red;
+}
+
+.labelwithout-answer::after {
+  position: absolute;
+  content: " \2754";
+  right: 85px;
+  top: 3px;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+@media only screen and (max-width: 360px) {
+    .container-principal-conjugation {
+     max-width: max-content;
+     padding: 10px 5px;
+    }
+}

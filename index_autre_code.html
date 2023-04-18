@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Le passé composé</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container-principal-conjugation">
+    <div class="container-choice">
+      <p class="instructions">Conjuguez au passé composé</p>
+      <label for="verb-select">Choisir un verbe </label>
+      <select id="verb-select">
+        <option value="parler">parler</option>
+        <option value="étudier">étudier</option>
+        <option value="avancer">avancer</option>
+        <option value="changer">changer</option>
+        <option value="essuyer">essuyer</option>
+        <option value="employer">employer</option>
+        <option value="essayer">essayer</option>
+        <option value="lever">lever</option>
+        <option value="espérer">espérer</option>
+        <option value="acheter">acheter</option>
+        <option value="jeter">jeter</option>
+        <option value="peler">peler</option>
+        <option value="appeler">appeler</option>
+      </select>
+    </div>
+    <div class="container-conjugation">
+      <form id="form">
+        <label>J' <input autocomplete="off" type="text" maxlength="15"></label>
+        <label>Tu <input autocomplete="off" type="text" maxlength="15"></label>
+        <label>Elle <input autocomplete="off" type="text" maxlength="15"></label>
+        <label>Nous <input autocomplete="off" type="text" maxlength="15"></label>
+        <label>Vous <input autocomplete="off" type="text" maxlength="15"></label>
+        <label>Ils <input autocomplete="off" type="text" maxlength="15"></label>
+      </form>
+    </div>
+    <div class="buttons"><button type="submit" form="form">Vérifiez</button> <button type="reset">Effacez</button></div>
+  </div>
+  <div class="container-feedback hidden">Réponse(s) correcte(s) : </div>
+
+  <script>// <![CDATA[
+    const form = document.querySelector('.container-conjugation form');
+    const inputs = document.querySelectorAll('form input');
+    const feedback = document.querySelector('.container-feedback');
+    const verbSelected = document.getElementById('verb-select');
+    const buttonReset = document.querySelector('button[type="reset"]');
+    const options = [...document.querySelectorAll('#verb-select option')];
+
+    const getVerbInfoFunc = auxiliaires => infinitive => {
+      const participePassé = infinitive.slice(0, infinitive.length - 2) + 'é';
+      const answers = auxiliaires.map(auxiliaire => auxiliaire + ' ' + participePassé);
+
+      return { infinitive, answers, userAnswers: [] }
+    }
+    const getVerbInfos = getVerbInfoFunc(["ai", "as", "a", "avons", "avez", "ont"]);
+
+    const listOfVerbs = options.map(({ value }) => getVerbInfos(value));
+
+    const getVerbFromList = selectedVerb => listOfVerbs.find(({ infinitive }) => infinitive === selectedVerb);
+    const removeBeginningWhiteSpaces = ({ target }) => target.value = target.value.toLowerCase().trimStart();
+    const removeExtraSpaces = sentence => sentence.split(' ').filter(word => word.length).join(' ');
+    const removeClassList = element => element.removeAttribute('class');
+    const hideFeedback = () => feedback.classList.add('hidden');
+    const showUserAnswers = ({ userAnswers }) => userAnswers.forEach((userAnswer, i) => inputs[i].value = userAnswer);
+
+    const resetUserAnswers = () => {
+      const currentVerb = getVerbFromList(verbSelected.value);
+      currentVerb['userAnswers'] = [];
+    }
+
+    const resetLabelStyle = ({ target: input }) => {
+      removeClassList(input.parentElement);
+      hideFeedback();
+    }
+
+    const resetForm = () => {
+      form.reset()
+      inputs.forEach(input => {
+        input.disabled = false;
+        removeClassList(input.parentElement);
+      });
+
+      hideFeedback();
+    }
+
+    const getLabelAttribute = isCorrectAnswer => ({
+      true: 'labelsuccess',
+      false: "labelfailure",
+    })[isCorrectAnswer] || 'labelwithout-answer'
+
+    const checkAnswers = ({ userAnswers, answers }) => {
+      const score = userAnswers.reduce((acc, userAnswer, i) => {
+        const isAnswerCorrect = userAnswer.length ? answers[i] === userAnswer : null;
+        const labelClass = getLabelAttribute(isAnswerCorrect)
+
+        inputs[i].parentElement.classList.add(labelClass);
+        inputs[i].disabled = labelClass.includes('labelsuccess');
+
+        return isAnswerCorrect ? acc + 1 : acc;
+      }, 0)
+
+      feedback.textContent = `Réponse(s) correcte(s) : ${score} / 6`;
+      feedback.classList.remove('hidden');
+    }
+
+    const processUserAnswers = event => {
+      event.preventDefault();
+
+      const verb = getVerbFromList(verbSelected.value);
+
+      verb['userAnswers'] = verb.answers.map((_, i) => inputs[i].value = removeExtraSpaces(inputs[i].value));
+
+      checkAnswers(verb)
+    }
+
+    const changeVerb = () => {
+      resetForm();
+
+      const verb = getVerbFromList(verbSelected.value);
+
+      if (verb.userAnswers.length) {
+        showUserAnswers(verb);
+        checkAnswers(verb)
+      }
+    }
+
+    verbSelected.addEventListener('change', changeVerb);
+    form.addEventListener('submit', processUserAnswers);
+    buttonReset.addEventListener('click', () => {
+      resetForm();
+      resetUserAnswers();
+    });
+    form.addEventListener('focusin', resetLabelStyle);
+    form.addEventListener('keydown', resetLabelStyle);
+    form.addEventListener('input', removeBeginningWhiteSpaces);
+  // ]]></script>
+</body>
+</html>
